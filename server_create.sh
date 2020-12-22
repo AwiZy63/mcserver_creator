@@ -118,10 +118,10 @@ sleep 1
 
 clear
 
-if [[ ! $version == "" ]]; then
+if [[ $version ]]; then
 
     # Serveur forge
-    read -p "Voulez vous installer forge sur votre serveur ? [o/N] " installForge
+    read -p "Voulez vous installer forge sur votre serveur ? [o/N] : " installForge
 
     case $installForge in
     [yY][eE][sS] | [yY] | [oO][uU][iI] | [oO])
@@ -133,7 +133,7 @@ if [[ ! $version == "" ]]; then
     esac
 
     # Repertoire du serveur
-    read -p "Entrez le nom de votre serveur. [defaut : minecraft_server] " setFolderName
+    read -p "Entrez le nom de votre serveur. [defaut : minecraft_server] : " setFolderName
 
     case $setFolderName in
     *)
@@ -144,6 +144,23 @@ if [[ ! $version == "" ]]; then
         fi
         ;;
     esac
+
+    # Version cracké ou non
+
+    read -p "Voulez vous que votre serveur soit en cracké (version non payantes acceptées) [o/N] : " crackedServer
+
+    case $crackedServer in
+        [oO][uU][iI] | [oO] | [yY][eE][sS] | [yY])
+            isCrack=true
+        ;;
+    esac 
+
+
+
+
+
+
+    ################################################################################################
 
     mkdir $folderName
     cd $folderName
@@ -326,12 +343,19 @@ if [[ ! $version == "" ]]; then
 
     else
         echo -e "error: annulation"
+        sleep 1
+        exit
     fi
 
     clear
 
     # Acceptation de la EULA
     echo "eula=true" >eula.txt
+
+
+    if [[ $isCrack ]]; then
+        echo "online-mode=false" > server.properties
+    fi
 
     # Definition de la quantité de ram à allouer pour le serveur
     while :; do
